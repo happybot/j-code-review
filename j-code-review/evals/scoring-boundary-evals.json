@@ -1,0 +1,100 @@
+[
+  {
+    "name": "定级边界：明确违反验收标准，但有绕行办法",
+    "input": "审查这个导入功能。重复上传同一文件时，系统整批报错，不按验收标准返回跳过计数。用户可以先清空数据再重传。",
+    "expected_skill_invoked": true,
+    "test_type": "scoring_boundary",
+    "expected_behavior": "定为 P1。理由：确定是 bug，且明确违反验收标准；有绕行办法不改变 P1 定义。不得因为「能绕行」降成 P2。",
+    "expected_output_contains": [
+      "P1"
+    ],
+    "hard_assertions": [
+      "违反验收标准必须触发 P1"
+    ]
+  },
+  {
+    "name": "定级边界：行为正确但有健壮性风险",
+    "input": "审查这个改动。功能行为正确，但参数校验用了裸 parseInt，非数字后缀会被截断后继续执行。",
+    "expected_skill_invoked": true,
+    "test_type": "scoring_boundary",
+    "expected_behavior": "定为 P2 或 Optional。行为在当前主流程正确，问题是健壮性与一致性风险，且有可绕行路径，不构成 P1。",
+    "expected_output_contains_any": [
+      "P2",
+      "Optional"
+    ],
+    "hard_assertions": [
+      "行为正确但有健壮性风险不得上 P1"
+    ]
+  },
+  {
+    "name": "定级边界：文档与注释不准确",
+    "input": "审查这个改动。代码行为正确，但注释写的不变式在暗色主题下不成立，设计记录也漏记了这次变更。",
+    "expected_skill_invoked": true,
+    "test_type": "scoring_boundary",
+    "expected_behavior": "定为 P2。问题真实且会影响后续维护，但不影响运行时行为，不能拔高成 P1。改法方向是修正注释与设计记录，不改代码逻辑。",
+    "expected_output_contains": [
+      "P2"
+    ],
+    "hard_assertions": [
+      "文档精确性问题不得定为 P0/P1"
+    ]
+  },
+  {
+    "name": "定级边界：无具体失败场景的怀疑",
+    "input": "审查这个改动。你觉得某处可能在高并发下有问题，但说不出具体触发路径。",
+    "expected_skill_invoked": true,
+    "test_type": "scoring_boundary",
+    "expected_behavior": "列入「待确认事项」，不上 P0/P1。要求补充具体失败场景或上下文；不得为了凑数写成阻止项。",
+    "expected_output_contains": [
+      "待确认"
+    ],
+    "hard_assertions": [
+      "无具体失败场景不得上 P0/P1"
+    ]
+  },
+  {
+    "name": "定级边界：纯个人风格偏好",
+    "input": "审查这个改动。实现正确，只是你觉得变量名可以更短，或者换一种写法更顺眼。",
+    "expected_skill_invoked": true,
+    "test_type": "scoring_boundary",
+    "expected_behavior": "不记录为问题。纯个人偏好不阻塞提交；如果确有必要，最多写 Optional 并说明为什么与项目规范或可读性有关。",
+    "expected_output_contains_any": [
+      "不记录",
+      "不阻塞",
+      "Optional"
+    ],
+    "hard_assertions": [
+      "纯个人偏好不得作为阻塞项"
+    ]
+  },
+  {
+    "name": "定级边界：测试断言与实现同错",
+    "input": "审查这个改动。测试全绿，但断言把错误行为钉死了：测试期望整批拒绝，而验收标准要求跳过计数。",
+    "expected_skill_invoked": true,
+    "test_type": "scoring_boundary",
+    "expected_behavior": "把测试本身视为缺陷证据，不得用「测试全绿」证明行为正确。阻止项仍按违反验收标准定 P1，并在发现中说明测试钉住了错误行为。",
+    "expected_output_contains_any": [
+      "测试",
+      "断言"
+    ],
+    "hard_assertions": [
+      "测试全绿不得抵消验收标准冲突"
+    ]
+  },
+  {
+    "name": "定级边界：批准结论存在代码证据的 P1",
+    "input": "审查这个改动。你已确认一处 P1，证据来自 diff 中的代码，但作者说下个版本再修。",
+    "expected_skill_invoked": true,
+    "test_type": "scoring_boundary",
+    "expected_behavior": "不得批准。存在带代码证据的 P1 时，结论只能是拒绝或需修改后批准；「下个版本再修」不构成批准理由。",
+    "expected_output_contains_any": [
+      "不得批准",
+      "不能批准",
+      "需修改后批准",
+      "拒绝"
+    ],
+    "hard_assertions": [
+      "代码证据的 P1 必须阻止批准"
+    ]
+  }
+]

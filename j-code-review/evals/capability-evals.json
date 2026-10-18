@@ -1,0 +1,84 @@
+[
+  {
+    "name": "语言热点：JS 未处理的 Promise",
+    "input": "审查这段 Node 代码：一个 async handler 里调用 save() 但没有 await，也没有 catch。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "识别未处理的 Promise。说明后果：请求可能在写入完成前返回，失败会变成 unhandled rejection。给出文件:行号、触发条件、改法方向（await 或显式 catch 并传播）。",
+    "expected_output_contains_any": [
+      "Promise",
+      "await",
+      "未处理"
+    ],
+    "hard_assertions": [
+      "必须指出未 await 的异步调用",
+      "必须说明上线后果"
+    ]
+  },
+  {
+    "name": "语言热点：Python 可变默认参数",
+    "input": "审查这段 Python：函数参数默认值是 []，函数里往这个列表 append。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "识别可变默认参数会在多次调用间共享状态。给出文件:行号、触发路径、改法方向（默认值改为 None，在函数内创建新列表）。",
+    "expected_output_contains_any": [
+      "可变默认",
+      "共享",
+      "默认参数"
+    ],
+    "hard_assertions": [
+      "必须指出跨调用共享状态"
+    ]
+  },
+  {
+    "name": "测试质量：Mock 滥用",
+    "input": "审查这次改动：新增测试的断言只有 expect(repo.save).toHaveBeenCalled()。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "识别测试只验证 mock 被调用，没有验证真实行为或持久化结果。按测试腐化 T4 报告，要求补断言：写入内容、返回值或可观察状态。",
+    "expected_output_contains_any": [
+      "mock",
+      "断言",
+      "行为"
+    ],
+    "hard_assertions": [
+      "必须指出测试没有验证真实行为",
+      "必须给出补断言方向"
+    ]
+  },
+  {
+    "name": "语义归属：两个写入者",
+    "input": "审查这个改动：缓存和数据库都能改订单状态，两处各自更新。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "识别订单状态有两个写入者，缺少唯一所有者。说明后果：状态漂移、竞态和失败后不一致。给出改法方向：指定唯一所有者，另一处改为只读或经所有者更新。",
+    "expected_output_contains_any": [
+      "唯一所有者",
+      "语义归属",
+      "真源"
+    ],
+    "hard_assertions": [
+      "必须指出两个写入者",
+      "必须说明状态漂移风险"
+    ]
+  },
+  {
+    "name": "安全快速检查：SQL 拼接与对象级授权",
+    "input": "审查这个接口：用户 id 从 query 参数拼接进 SQL；删除接口只校验登录，不校验资源归属。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "识别 SQL 注入和缺失的对象级授权。两者都按 P0/P1 处理，给出文件:行号、攻击场景、改法方向（参数化查询；资源归属校验）。",
+    "expected_output_contains": [
+      "SQL",
+      "授权"
+    ],
+    "expected_output_contains_any": [
+      "P0",
+      "P1"
+    ],
+    "hard_assertions": [
+      "必须识别 SQL 注入",
+      "必须识别对象级授权缺失"
+    ]
+  }
+]

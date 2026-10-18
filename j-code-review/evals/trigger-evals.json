@@ -1,0 +1,149 @@
+[
+  {
+    "name": "正向触发：审查当前分支相对 main 的改动",
+    "input": "帮我审查当前分支相对 main 的改动，给个明确结论。",
+    "expected_skill_invoked": true,
+    "test_type": "positive_trigger",
+    "expected_behavior": "进入 j-code-review。先确认 diff 与范围，按标准审查模式逐维度审查，输出带 P0-P3 分级和明确结论的报告。",
+    "hard_assertions": [
+      "expected_skill_invoked == true",
+      "必须给出三选一结论"
+    ]
+  },
+  {
+    "name": "正向触发：PR 能否合并",
+    "input": "这个 PR 能不能过？主要改动在 src/auth/session.ts。",
+    "expected_skill_invoked": true,
+    "test_type": "positive_trigger",
+    "expected_behavior": "进入 j-code-review。读取 PR diff 与文件全文，审查认证与会话相关风险，输出结论和分级发现。",
+    "hard_assertions": [
+      "expected_skill_invoked == true",
+      "必须读变更文件全文，不只读 diff"
+    ]
+  },
+  {
+    "name": "正向触发：单文件 code review",
+    "input": "code review 一下 src/services/upload.ts，重点看并发和事务边界。",
+    "expected_skill_invoked": true,
+    "test_type": "positive_trigger",
+    "expected_behavior": "进入 j-code-review。确认改动来源，沿行为链路审查并发与事务，输出发现和结论。",
+    "hard_assertions": [
+      "expected_skill_invoked == true"
+    ]
+  },
+  {
+    "name": "正向触发：发版前全量审查",
+    "input": "准备发版，帮我对 v1.4.0 以来的改动做一次全量审查。",
+    "expected_skill_invoked": true,
+    "test_type": "positive_trigger",
+    "expected_behavior": "进入 j-code-review 的发布前全量模式。按子系统分节，每节独立结论，最后给整体结论。",
+    "hard_assertions": [
+      "expected_skill_invoked == true",
+      "大改动必须分节输出"
+    ]
+  },
+  {
+    "name": "正向触发：中文「帮忙看看这段改动」",
+    "input": "帮忙看看这段改动有没有问题，改动在 fix/upload-retry 分支。",
+    "expected_skill_invoked": true,
+    "test_type": "positive_trigger",
+    "expected_behavior": "进入 j-code-review。取分支 diff，按标准审查模式审查，输出结论。",
+    "hard_assertions": [
+      "expected_skill_invoked == true"
+    ]
+  },
+  {
+    "name": "负向不触发：要求修改代码",
+    "input": "把这段代码重构成策略模式，直接改到工作区。",
+    "expected_skill_invoked": false,
+    "test_type": "negative_trigger",
+    "expected_behavior": "不触发 j-code-review。用户要求实现改动，本技能只审查、不改代码。",
+    "hard_assertions": [
+      "expected_skill_invoked == false"
+    ]
+  },
+  {
+    "name": "负向不触发：只跑测试",
+    "input": "跑一下后端测试，把失败用例和覆盖率贴给我。",
+    "expected_skill_invoked": false,
+    "test_type": "negative_trigger",
+    "expected_behavior": "不触发 j-code-review。这是测试执行任务，不是代码审查。",
+    "hard_assertions": [
+      "expected_skill_invoked == false"
+    ]
+  },
+  {
+    "name": "负向不触发：审查非代码产物",
+    "input": "帮我审一下这份产品需求和这份 UI 设计稿。",
+    "expected_skill_invoked": false,
+    "test_type": "negative_trigger",
+    "expected_behavior": "不触发 j-code-review。本技能只审代码改动。",
+    "hard_assertions": [
+      "expected_skill_invoked == false"
+    ]
+  },
+  {
+    "name": "负向不触发：多轮收敛审查",
+    "input": "用 review-bounded 跑三轮审查，最后给收敛判定。",
+    "expected_skill_invoked": false,
+    "test_type": "negative_trigger",
+    "expected_behavior": "不触发 j-code-review。多轮「审查—修复」收敛交给 review-bounded。",
+    "hard_assertions": [
+      "expected_skill_invoked == false"
+    ]
+  },
+  {
+    "name": "负向不触发：纯格式化",
+    "input": "把这几个文件按 prettier 格式化一下。",
+    "expected_skill_invoked": false,
+    "test_type": "negative_trigger",
+    "expected_behavior": "不触发 j-code-review。格式化交给格式化工具。",
+    "hard_assertions": [
+      "expected_skill_invoked == false"
+    ]
+  },
+  {
+    "name": "边界输入：没有 diff，只有一句「看看有没有问题」",
+    "input": "看看这个项目有没有问题。",
+    "expected_skill_invoked": true,
+    "test_type": "boundary_trigger",
+    "expected_behavior": "进入 j-code-review，但先 STOP 澄清：要审哪个 diff、分支、PR 或文件。不凭空审整个仓库。",
+    "hard_assertions": [
+      "expected_skill_invoked == true",
+      "必须先问清审查范围和对象"
+    ]
+  },
+  {
+    "name": "边界输入：只要风格速扫",
+    "input": "只帮我看看这个文件的命名和注释风格，不用查 bug。",
+    "expected_skill_invoked": true,
+    "test_type": "boundary_trigger",
+    "expected_behavior": "进入 j-code-review 的快速扫描模式。只审命名与注释，开头注明范围，输出简版报告。",
+    "hard_assertions": [
+      "expected_skill_invoked == true",
+      "必须声明只审风格范围"
+    ]
+  },
+  {
+    "name": "边界输入：生成代码混入 diff",
+    "input": "审查这次改动，dist/ 下的文件是构建生成的，也一起看看。",
+    "expected_skill_invoked": true,
+    "test_type": "boundary_trigger",
+    "expected_behavior": "进入 j-code-review。跳过 dist/ 生成代码并在开头注明；只审手写代码。",
+    "hard_assertions": [
+      "expected_skill_invoked == true",
+      "必须跳过生成代码并注明"
+    ]
+  },
+  {
+    "name": "边界输入：用户要求一次审完 800 行改动",
+    "input": "这次改了 800 行，我知道很大，你一次审完，别拆。",
+    "expected_skill_invoked": true,
+    "test_type": "boundary_trigger",
+    "expected_behavior": "进入 j-code-review 的发布前全量模式。按子系统分节输出，每节独立结论，最后给整体结论。",
+    "hard_assertions": [
+      "expected_skill_invoked == true",
+      "必须分节，不得合并成一个笼统结论"
+    ]
+  }
+]

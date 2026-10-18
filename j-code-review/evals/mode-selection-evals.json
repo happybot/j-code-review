@@ -1,0 +1,75 @@
+[
+  {
+    "name": "模式选择：20 行单文件低风险改动",
+    "input": "审查这个改动：只改了 README 旁边的一个工具函数，20 行，单文件。",
+    "expected_skill_invoked": true,
+    "test_type": "mode_selection",
+    "expected_behavior": "选择快速扫描模式。只在用户没有明确要求完整报告时使用。输出结论、发现、验证与范围。",
+    "expected_output_contains_any": [
+      "快速扫描",
+      "快速模式"
+    ],
+    "hard_assertions": [
+      "预期模式：快速扫描"
+    ]
+  },
+  {
+    "name": "模式选择：120 行跨文件改动",
+    "input": "审查这个 PR：3 个文件，约 120 行，涉及订单状态流转。",
+    "expected_skill_invoked": true,
+    "test_type": "mode_selection",
+    "expected_behavior": "选择标准审查模式。逐维度审查，沿状态流转链路推演，输出完整报告。",
+    "expected_output_contains_any": [
+      "标准审查",
+      "标准模式"
+    ],
+    "hard_assertions": [
+      "预期模式：标准审查"
+    ]
+  },
+  {
+    "name": "模式选择：认证模块的 30 行改动",
+    "input": "审查这个改动：30 行，只改了登录会话刷新逻辑。",
+    "expected_skill_invoked": true,
+    "test_type": "mode_selection",
+    "expected_behavior": "改动虽小，但落在认证高风险区。至少用标准审查，不得降为快速扫描。",
+    "expected_output_contains_any": [
+      "高风险",
+      "标准审查",
+      "认证"
+    ],
+    "hard_assertions": [
+      "高风险区不得用快速扫描"
+    ]
+  },
+  {
+    "name": "模式选择：发版前全量审查",
+    "input": "下个版本要发了，从上一个 tag 到现在全部审一遍。",
+    "expected_skill_invoked": true,
+    "test_type": "mode_selection",
+    "expected_behavior": "选择发布前全量模式。按子系统分节，每节独立结论，最后给整体结论。",
+    "expected_output_contains_any": [
+      "发布前全量",
+      "分节",
+      "子系统"
+    ],
+    "hard_assertions": [
+      "预期模式：发布前全量"
+    ]
+  },
+  {
+    "name": "模式选择：用户明确只要风格速扫",
+    "input": "不用查 bug，只看看命名和注释。",
+    "expected_skill_invoked": true,
+    "test_type": "mode_selection",
+    "expected_behavior": "选择快速扫描模式，范围限定在命名与注释，开头声明「只审风格，未审逻辑」。",
+    "expected_output_contains_any": [
+      "只审",
+      "范围",
+      "快速扫描"
+    ],
+    "hard_assertions": [
+      "必须声明审查范围"
+    ]
+  }
+]

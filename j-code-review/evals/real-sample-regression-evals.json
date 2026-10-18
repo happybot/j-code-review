@@ -1,0 +1,73 @@
+[
+  {
+    "name": "真实样例回归：服务层幂等边界",
+    "input": "审查一次导入功能的后端改动：约 10 个文件，涉及服务层与工具层。重点审跨模块一致性、测试质量、导入的幂等边界与错误路径。相关模块审查已通过，本轮不翻旧账。",
+    "expected_skill_invoked": true,
+    "test_type": "real_sample_regression",
+    "expected_behavior": "给出「需修改后批准」或「有条件批准」。至少识别一个 P1：重复上传同一文件时，守卫把合法重传也拒掉，整批报错，违反验收标准。问题必须带文件:行号、为什么是恶化、改法方向、代码证据。验证一节写明只跑了针对性单测、未跑全量测试。",
+    "expected_output_contains": [
+      "P1",
+      "代码证据",
+      "幂等",
+      "验收"
+    ],
+    "expected_output_contains_any": [
+      "需修改后批准",
+      "有条件批准"
+    ],
+    "hard_assertions": [
+      "必须识别幂等重传被误拒的 P1",
+      "必须区分本次引入与基线已有问题",
+      "必须声明未跑全量测试"
+    ],
+    "sanitized": true,
+    "sanitization_note": "已去掉项目名、版本号、日期、路径和业务数据，只保留判断结构。"
+  },
+  {
+    "name": "真实样例回归：控制器与路由",
+    "input": "审查一次后端控制器与路由改动：约 17 个文件，涉及控制器、路由和入口。重点审权限面、响应契约、参数校验惯例、控制器薄层。",
+    "expected_skill_invoked": true,
+    "test_type": "real_sample_regression",
+    "expected_behavior": "给出「批准」，0 个阻塞项。把「某个新端点沿用裸 parseInt，其他端点已用严格 id 校验」定为 Optional/P2，而不是 P1：有具体失败场景，但影响面小、可绕行。至少列 1 个 Nit 和若干 FYI。验证一节声明未实测和未覆盖范围。",
+    "expected_output_contains": [
+      "批准",
+      "Optional",
+      "代码证据"
+    ],
+    "expected_output_contains_any": [
+      "0 阻塞",
+      "无阻塞",
+      "无 P0"
+    ],
+    "hard_assertions": [
+      "不得把可绕行的 id 校验不一致定为 P1",
+      "批准前必须列反对理由"
+    ],
+    "sanitized": true,
+    "sanitization_note": "已去掉项目名、版本号、日期、路径和业务数据，只保留判断结构。"
+  },
+  {
+    "name": "真实样例回归：主题色对齐复审",
+    "input": "审查一次前端主题色对齐改动：约 4 个文件，涉及样式变量、组件 token、设计记录和登录页清理。重点确认亮暗两套色值是否一致、注释与设计记录是否与事实相符、有无残留死代码。",
+    "expected_skill_invoked": true,
+    "test_type": "real_sample_regression",
+    "expected_behavior": "给出「需修改后批准」，无 P0/P1。识别两处 P2：一处注释不变式在暗色下不成立且变更未进设计记录；一处设计记录把分页激活项的对比度写成按钮标签，方向表述相反。再识别 P3：主题色变量已无消费者的死 token；变更记录缺 Unreleased。每条带代码证据与改法方向。",
+    "expected_output_contains": [
+      "P2",
+      "P3",
+      "代码证据",
+      "改法方向"
+    ],
+    "expected_output_contains_any": [
+      "需修改后批准",
+      "有条件批准"
+    ],
+    "hard_assertions": [
+      "不得把文档精确性问题拔高成 P1",
+      "必须区分色值本身与注释、设计记录问题",
+      "必须列出过滤名单"
+    ],
+    "sanitized": true,
+    "sanitization_note": "已去掉项目名、版本号、日期、路径和业务数据，只保留判断结构。"
+  }
+]

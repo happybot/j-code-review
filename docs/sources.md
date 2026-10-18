@@ -2,7 +2,7 @@
 
 本文是 [README](../README.md) 的补充材料，记录 j-code-review 的规则各自从哪来。
 
-规则不是自拟的，拼装自六份来源。前三份是公开规范与著作；后三份是技能，权威性低于前三份，也不凌驾于项目授权。SKILL.md 里每条规则都带行内引用，例如 `APoSD Ch5`、`Code Complete`。据此可以逐条回溯到本文件。
+规则不是自拟的，拼装自六份来源。前三份是公开规范与著作；后三份是技能，权威性低于前三份，也不凌驾于项目授权。SKILL.md 只写判据与流程，来源与逐章对照记录在本文件，仓库 README 有来源总表。
 
 ## Google Engineering Practices
 
@@ -81,3 +81,73 @@ review-bounded 解决的是 AI 审查没有终止条件的问题。它固定跑�
 - 优先删除复杂度，不要只把同一思路收拾干净
 - 拒绝「也许改个名」级别的建议
 - 偏好直接、无聊、可维护的代码
+
+## 2026-10 增补来源
+
+本轮从四个外部技能仓库中筛选，只取与单次审查兼容的部分，不改变「只审查、不改代码、只给一次结论」的定位。
+
+### code-inspector-zhiai
+
+来源：https://github.com/ZhiHui6/code-inspector-zhiai （MIT），含中英双语技能。
+
+借用：
+
+- 语言热点检查：JS/TS、Python、JVM、Go、Rust、C/C++、C#/.NET、SQL/API/配置的高信号问题，整理为 `references/language-hotspots.md`
+- 验证命令发现：按生态选择项目已声明的最小检查命令
+- 误报控制：路径可达、影响可复现、规则适用、项目配置允许、非生成代码
+
+未借用：
+
+- Fix 模式和 unified diff 输出。本技能只审查，不改代码
+- A-F 综合评分。评分和健康度交给 yotta-code-quality
+- 完整语言规则包和 `rule_id` 体系。对单次审查过重，只保留高信号热点
+- 报告写入文件后的 `validate_report.py` 校验。本技能没有报告写盘强制流程
+
+### cuckoo-skills-pack（security-check）
+
+来源：https://github.com/jiangchengnay/cuckoo-skills-pack （MIT），本轮只取其中的 security-check 技能。
+
+借用：
+
+- 安全快速检查清单：注入、密钥、路径穿越、鉴权、反序列化、依赖、XSS/CSRF
+- 只报可利用问题，区分高危和加固建议
+
+未借用：
+
+- 独立的安全技能定位。完整安全审计交给 security-review，本技能只做快速检查
+- `[高危] / [加固]` 输出格式。本技能继续用 P0-P3
+
+### dev-skeleton（review-skeleton、maintain-source-cohesion）
+
+来源：https://github.com/glenzli/dev-skeleton （MIT），本轮只取 review-skeleton 与 maintain-source-cohesion 的概念。
+
+借用概念：
+
+- 语义归属：行为的状态、变更权、生命周期、不变量和失败策略要有唯一所有者
+- 真源分散：同一事实有多个可写来源，是设计问题
+- 范围蔓延：与本次意图无关的重构和扩展要拆出
+- 地图漂移：项目文档或架构地图与代码不一致时，以代码为准并报告漂移
+
+未借用：
+
+- `SKELETON.md` / `REVIEW_SKELETON.md` 的文件依赖和初始化流程
+- 跨所有权边界的迁移工作流。本技能只审查，不做迁移
+
+### yotta-code-quality
+
+来源：https://github.com/YottaMeta/yotta-code-quality （MIT）。
+
+借用：
+
+- 测试腐化风险 T1-T6：意图不清、脆弱、重复、mock 滥用、覆盖率幻觉、结构错配，整理为 `references/test-quality.md`
+- Iron Law 的后果意识：每条发现写清症状、触发条件、后果、改法
+
+未借用：
+
+- 0-100 健康度评分和扣分公式。需要健康分时用 yotta-code-quality
+- 三档 Critical / Warning / Suggestion 标签。本技能继续用 P0-P3
+- 完整书目来源表和 12 类风险全文。只取测试质量和后果意识，不复制整套评分体系
+
+## 真实样例
+
+`evals/real-sample-regression-evals.json` 的三条测例来自真实项目的审查记录，已脱敏。样例只保留可复用的判断结构：分级、证据强度、过滤名单、验证声明。项目名、版本号、日期、路径和业务数据已去掉。

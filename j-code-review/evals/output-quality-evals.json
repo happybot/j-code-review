@@ -1,0 +1,125 @@
+[
+  {
+    "name": "输出质量：完整报告字段齐全",
+    "input": "审查当前分支相对 main 的改动，按标准模式输出完整报告。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "报告包含结论、审查对象与范围、变更判定、发现列表、待确认事项、反对理由与证据强度、已核对但不列出、验证与搜索空间、下一步。",
+    "expected_output_contains": [
+      "结论",
+      "审查对象",
+      "变更判定",
+      "发现",
+      "待确认",
+      "反对理由",
+      "证据强度",
+      "验证与搜索空间",
+      "下一步"
+    ],
+    "hard_assertions": [
+      "报告字段顺序与模板一致"
+    ]
+  },
+  {
+    "name": "输出质量：每条阻止项三要素齐全",
+    "input": "审查这个 PR，发现一处确定会丢数据的写入，按 P0 处理。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "P0 条目必须写全文件:行号、为什么是恶化、改法方向、证据强度。改法方向要具体，不写「建议优化」。",
+    "expected_output_contains_any": [
+      "为什么是恶化",
+      "为什么算恶化",
+      "危害"
+    ],
+    "hard_assertions": [
+      "P0/P1 必须包含位置、原因、改法方向、证据强度"
+    ]
+  },
+  {
+    "name": "输出质量：批准前必须列反对理由",
+    "input": "这次改动看起来没问题，直接给批准吧。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "即使初审无问题，批准前也要列出最强的「不应合并」理由，并标注代码证据 / 测试证据 / 推测。存在带代码证据的 P0/P1 时不得批准。",
+    "expected_output_contains_any": [
+      "不应合并",
+      "反对理由",
+      "反面理由"
+    ],
+    "hard_assertions": [
+      "批准前必须列反对理由"
+    ]
+  },
+  {
+    "name": "输出质量：验证状态四选一",
+    "input": "审查这次改动。测试命令跑不起来，你先看代码。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "验证与搜索空间一节必须使用「已运行并通过 / 未实测 / 运行失败 / 无法验证」四种状态。测试未运行时写「未实测」，不得声称测试通过。",
+    "expected_output_contains_any": [
+      "未实测",
+      "运行失败",
+      "无法验证"
+    ],
+    "hard_assertions": [
+      "不得声称测试已验证"
+    ]
+  },
+  {
+    "name": "输出质量：待确认事项不混入发现列表",
+    "input": "审查这个改动。有一处你怀疑但缺少框架配置，无法确认。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "缺上下文、判不了的问题放进「待确认事项」，不混进发现列表，也不降级成 Optional。发现列表只放已有证据的问题。",
+    "expected_output_contains": [
+      "待确认"
+    ],
+    "hard_assertions": [
+      "待确认事项必须单独成节"
+    ]
+  },
+  {
+    "name": "输出质量：过滤名单记录已消解候选",
+    "input": "审查这个改动。你一开始怀疑空指针，但调用方已保证非空。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "把「空指针」放进「已核对但不列出」，写明调用方约束已消除风险；不把已消解的候选报成问题。",
+    "expected_output_contains_any": [
+      "已核对但不列出",
+      "过滤名单",
+      "已消解"
+    ],
+    "hard_assertions": [
+      "已消解候选必须记录，避免下一轮重复提出"
+    ]
+  },
+  {
+    "name": "输出质量：零发现也要声明范围",
+    "input": "审查这个小改动，仔细看有没有问题。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "即使零发现，也要声明验证状态和未覆盖范围，并说明「没发现问题」只代表在已搜范围内没发现。",
+    "expected_output_contains_any": [
+      "未覆盖",
+      "已搜范围",
+      "未审"
+    ],
+    "hard_assertions": [
+      "零发现不得省略范围声明"
+    ]
+  },
+  {
+    "name": "输出质量：快速扫描只输出简版",
+    "input": "快速看一下这个 20 行的小改动，只关心有没有明显 bug。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "使用快速扫描模式。输出结论、审查对象与范围、P0/P1 或明显结构问题、验证与范围；不展开九个维度的完整报告。",
+    "expected_output_contains_any": [
+      "快速扫描",
+      "简版"
+    ],
+    "hard_assertions": [
+      "快速扫描不得输出完整九维度长报告"
+    ]
+  }
+]
