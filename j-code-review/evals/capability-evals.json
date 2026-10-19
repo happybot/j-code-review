@@ -80,5 +80,21 @@
       "必须识别 SQL 注入",
       "必须识别对象级授权缺失"
     ]
+  },
+  {
+    "name": "命名：误导性名字",
+    "input": "审查这个改动：新增方法 isValidToken(token)，名字像判空，实际返回匹配到的用户对象，找不到时返回 null，调用方把它当布尔用。",
+    "expected_skill_invoked": true,
+    "test_type": "output_quality",
+    "expected_behavior": "按 Naming 维度识别误导性命名：isXxx 返回非布尔，调用方按布尔语义使用会引入真实 bug（对象恒真）。给出文件:行号、失败场景（校验失败反而通过）、改法方向（改名如 findUserByToken 或改为真布尔返回）。",
+    "expected_output_contains_any": [
+      "误导",
+      "命名",
+      "isValidToken"
+    ],
+    "hard_assertions": [
+      "必须指出 isXxx 返回非布尔",
+      "必须给出改名或改返回类型的方向"
+    ]
   }
 ]

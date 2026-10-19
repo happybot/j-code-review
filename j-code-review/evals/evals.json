@@ -21,7 +21,7 @@
     },
     {
       "path": "capability-evals.json",
-      "case_count": 5,
+      "case_count": 6,
       "covers": [
         "output_quality"
       ]
@@ -48,14 +48,14 @@
       ]
     }
   ],
-  "total_cases": 42,
+  "total_cases": 43,
   "trigger_semantics": "本技能设置了 disable-model-invocation: true，模型不自动触发。trigger 测例按手动调用语义解释：判断用户请求是否属于本技能职责，而不是验证模型是否自动加载。",
   "coverage_notes": {
     "positive_trigger": "5 例，覆盖分支、PR、单文件、发版、中文触发词",
     "negative_trigger": "5 例，覆盖改代码、跑测试、非代码产物、多轮收敛、纯格式化",
     "boundary_trigger": "4 例，覆盖无 diff、范围限定、生成代码、超大改动",
     "output_quality": "8 例，覆盖报告字段、三要素、反对理由、验证状态、待确认分区、过滤名单、零发现声明、快速扫描简版",
-    "capability": "5 例，覆盖 JS 未处理 Promise、Python 可变默认参数、mock 滥用、语义归属、SQL 注入与对象级授权",
+    "capability": "6 例，覆盖 JS 未处理 Promise、Python 可变默认参数、mock 滥用、语义归属、SQL 注入与对象级授权、误导性命名",
     "mode_selection": "5 例，覆盖快速扫描、标准审查、高风险区、发布前全量、用户限定范围",
     "real_sample_regression": "3 例，取自真实审查记录（已脱敏），只保留判断结构",
     "scoring_boundary": "7 例，覆盖 P1/P2 边界、文档问题、无失败场景、纯偏好、测试同错、禁止批准条件"

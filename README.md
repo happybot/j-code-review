@@ -93,13 +93,13 @@ description 里列了触发词，用来手动检索和识别：代码审查、co
 
 ## 测例与回归
 
-`j-code-review/evals/` 下有 42 条测例，覆盖六类：
+`j-code-review/evals/` 下有 43 条测例，覆盖六类：
 
 | 文件 | 覆盖内容 |
 | --- | --- |
 | `trigger-evals.json` | 5 条正向、5 条负向、4 条边界触发 |
 | `output-quality-evals.json` | 报告字段、三要素、反对理由、验证状态、待确认分区、过滤名单、零发现声明、快速扫描简版 |
-| `capability-evals.json` | JS 异步、Python 可变默认参数、mock 滥用、语义归属、SQL 注入与对象级授权 |
+| `capability-evals.json` | JS 异步、Python 可变默认参数、mock 滥用、语义归属、SQL 注入与对象级授权、误导性命名 |
 | `mode-selection-evals.json` | 快速扫描、标准审查、高风险区、发布前全量、用户限定范围 |
 | `real-sample-regression-evals.json` | 真实审查记录（已脱敏） |
 | `scoring-boundary-evals.json` | P1/P2 边界、文档问题、无失败场景、纯偏好、测试同错、禁止批准条件 |
